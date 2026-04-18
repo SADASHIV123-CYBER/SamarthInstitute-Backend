@@ -14,17 +14,41 @@ const { errorHandler } = require('./middleware/error.middleware');
 
 const app = express();
 
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" } // Allow loading resources from different origins
-}));
-app.use(cors());
+/* ========================
+   🔐 Middleware
+======================== */
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
+// CORS (allow frontend)
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://samarth-institute-frontend.vercel.app',
+    ],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from uploads directory
+/* ========================
+   📁 Static Files
+======================== */
+
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Routes
+/* ========================
+   🚀 API Routes
+======================== */
+
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/attendance', attendanceRoutes);
@@ -33,13 +57,17 @@ app.use('/api/notes', notesRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/results', resultRoutes);
 
-// Serve static files in production (optional)
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../../client/dist')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
-  });
-}
+/* ========================
+   ❌ REMOVE frontend serving
+   (You are using Vercel)
+======================== */
+
+// ❌ DO NOT add app.get('*') here
+// ❌ DO NOT serve React from backend
+
+/* ========================
+   ⚠️ Error Handler
+======================== */
 
 app.use(errorHandler);
 
