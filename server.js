@@ -1,25 +1,36 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
-const dotenv = require('dotenv');
 const path = require('path');
 
-dotenv.config();
+// ... other imports
 
-const app = require('./src/app');
+const app = express();
 
-const PORT = process.env.PORT || 5000;
+// CORS configuration – allow your Vercel frontend
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://samarth-institute-frontend.vercel.app',  // 👈 Add this
+];
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('MongoDB connected');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
-  });
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+// ... rest of your app.js
