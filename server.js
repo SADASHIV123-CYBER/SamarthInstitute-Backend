@@ -4,23 +4,29 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+// ✅ IMPORT ROUTES (YOU MISSED THIS)
+const authRoutes = require('./routes/auth.routes');
+const leadRoutes = require('./routes/lead.routes');
+const attendanceRoutes = require('./routes/attendance.routes');
+const testRoutes = require('./routes/test.routes');
+const notesRoutes = require('./routes/notes.routes');
+const userRoutes = require('./routes/user.routes');
+const resultRoutes = require('./routes/result.routes');
+
 const app = express();
 
 /* ========================
    🔐 Middleware
 ======================== */
 
-// JSON parser
 app.use(express.json());
 
-// Security headers
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
 
-// CORS configuration (SAFE version)
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
@@ -31,12 +37,6 @@ app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      // ✅ Allow instead of crashing server
       return callback(null, true);
     },
     credentials: true,
@@ -47,15 +47,23 @@ app.use(
    📦 Routes
 ======================== */
 
-// Test route (VERY IMPORTANT for checking deploy)
+// ✅ TEST ROUTES
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// Example API route
 app.get('/api/test', (req, res) => {
   res.json({ message: 'Backend working properly 🚀' });
 });
+
+// ✅ REAL ROUTES (THIS WAS MISSING)
+app.use('/api/auth', authRoutes);
+app.use('/api/leads', leadRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/tests', testRoutes);
+app.use('/api/notes', notesRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/results', resultRoutes);
 
 /* ========================
    🚀 Server Start
@@ -68,7 +76,7 @@ const startServer = async () => {
     console.log("🔄 Connecting to MongoDB...");
 
     if (!process.env.MONGO_URI) {
-      throw new Error("❌ MONGO_URI is missing in environment variables");
+      throw new Error("❌ MONGO_URI is missing");
     }
 
     await mongoose.connect(process.env.MONGO_URI);
@@ -81,7 +89,7 @@ const startServer = async () => {
 
   } catch (error) {
     console.error("❌ Startup Error:", error.message);
-    process.exit(1); // crash properly so logs show error
+    process.exit(1);
   }
 };
 
