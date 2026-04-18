@@ -2,6 +2,8 @@ const notesRepository = require('../repositories/notes.repository');
 
 class NotesService {
   async uploadNote(fileData, uploadedBy) {
+    console.log('Uploading note with data:', fileData);
+    
     const noteData = {
       title: fileData.originalname,
       description: '',
@@ -9,6 +11,7 @@ class NotesService {
       fileType: fileData.mimetype,
       uploadedBy,
     };
+    
     return await notesRepository.create(noteData);
   }
 

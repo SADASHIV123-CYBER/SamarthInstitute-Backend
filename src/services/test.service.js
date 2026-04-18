@@ -9,8 +9,11 @@ class TestService {
   async activateTest(testId) {
     const test = await testRepository.findById(testId);
     if (!test) throw new Error('Test not found');
-    // Deactivate others
-    await testRepository.update({}, { isActive: false });
+    
+    // Deactivate all other tests
+    await testRepository.updateMany({ isActive: true }, { isActive: false });
+    
+    // Activate this test
     test.isActive = true;
     test.startTime = new Date();
     test.endTime = new Date(Date.now() + test.duration * 60 * 1000);
@@ -19,6 +22,10 @@ class TestService {
 
   async getActiveTest() {
     return await testRepository.findActive();
+  }
+
+  async getAllTests() {
+    return await testRepository.findAll();
   }
 
   async submitAttempt(testId, studentId, answers, timeTaken) {

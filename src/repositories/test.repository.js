@@ -18,6 +18,10 @@ class TestRepository {
     return await Test.findByIdAndUpdate(id, updateData, { new: true });
   }
 
+  async updateMany(filter, updateData) {
+    return await Test.updateMany(filter, updateData);
+  }
+
   async findAll() {
     return await Test.find().sort('-createdAt');
   }

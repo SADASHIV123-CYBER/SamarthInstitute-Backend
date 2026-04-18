@@ -27,6 +27,15 @@ exports.getActiveTest = async (req, res, next) => {
   }
 };
 
+exports.getAllTests = async (req, res, next) => {
+  try {
+    const tests = await testService.getAllTests();
+    res.json({ success: true, tests });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.submitTest = async (req, res, next) => {
   try {
     const { testId, answers, timeTaken } = req.body;
