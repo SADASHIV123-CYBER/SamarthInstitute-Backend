@@ -5,13 +5,14 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // ✅ IMPORT ROUTES (YOU MISSED THIS)
-const authRoutes = require('./routes/auth.routes');
-const leadRoutes = require('./routes/lead.routes');
-const attendanceRoutes = require('./routes/attendance.routes');
-const testRoutes = require('./routes/test.routes');
-const notesRoutes = require('./routes/notes.routes');
-const userRoutes = require('./routes/user.routes');
-const resultRoutes = require('./routes/result.routes');
+const authRoutes = require('./src/routes/auth.routes');
+// import authRoutes from './src/routes/auth.routes.js'
+const leadRoutes = require('./src/routes/lead.routes');
+const attendanceRoutes = require('./src/routes/attendance.routes');
+const testRoutes = require('./src/routes/test.routes');
+const notesRoutes = require('./src/routes/notes.routes');
+const userRoutes = require('./src/routes/user.routes');
+const resultRoutes = require('./src/routes/result.routes');
 
 const app = express();
 
